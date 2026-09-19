@@ -1,0 +1,40 @@
+linear_activations:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '{&na, &oi, &nm, &mm}'
+  quantizer:
+    _target_: fastforward_contrib.nn.dynamic_linear_quantizer.DynamicLinearClipQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward_contrib.quantization.granularity.PerToken
+    enable_grad_minmax: true
+    clip_granularity: tensor
+    clip_parametrization: identity
+    clip_init: null
+
+linear_weights:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '&linear_weights_decoder'
+  quantizer:
+    _target_: fastforward_contrib.nn.dynamic_linear_quantizer.DynamicLinearClipQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward.quantization.granularity.PerChannel
+      channel_dim: 0
+    symmetric: true
+    enable_grad_minmax: true
+    clip_granularity: follow_quantizer
+    clip_parametrization: identity
+    clip_init: null
+
+kv_cache:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '{&ke, &ve}'
+  quantizer:
+    _target_: fastforward_contrib.nn.dynamic_linear_quantizer.DynamicLinearClipQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward_contrib.quantization.granularity.PerToken
+    enable_grad_minmax: true
+    clip_granularity: tensor
+    clip_parametrization: identity
+    clip_init: null

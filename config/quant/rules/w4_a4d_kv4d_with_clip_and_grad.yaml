@@ -1,0 +1,43 @@
+# Static weights, dynamic activations and KV cache.
+#
+# Weights reuse the static per-channel symmetric LinearQuantizer from the `w4` rule, while
+# activations and the KV cache use DynamicLinearClipQuantizer with per-token granularity and
+# gradient-based min/max. This isolates the effect of dynamic activation/KV quantization from
+# dynamic weight quantization.
+
+linear_weights:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '&linear_weights_decoder'
+  quantizer:
+    _target_: fastforward.nn.linear_quantizer.LinearQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward.quantization.granularity.PerChannel
+      channel_dim: 0
+    symmetric: true
+
+linear_activations:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '{&na, &oi, &nm, &mm}'
+  quantizer:
+    _target_: fastforward_contrib.nn.dynamic_linear_quantizer.DynamicLinearClipQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward_contrib.quantization.granularity.PerToken
+    enable_grad_minmax: true
+    clip_granularity: tensor
+    clip_parametrization: identity
+    clip_init: null
+
+kv_cache:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '{&ke, &ve}'
+  quantizer:
+    _target_: fastforward_contrib.nn.dynamic_linear_quantizer.DynamicLinearClipQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward_contrib.quantization.granularity.PerToken
+    enable_grad_minmax: true
+    clip_granularity: tensor
+    clip_parametrization: identity
+    clip_init: null

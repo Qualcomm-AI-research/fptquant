@@ -1,0 +1,5 @@
+defaults:
+  - /tokenized_dataset@_here_: wikitext2_2048_train
+
+data_processing:
+  take: 128

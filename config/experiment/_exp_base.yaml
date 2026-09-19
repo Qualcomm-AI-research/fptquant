@@ -1,0 +1,79 @@
+# @package _global_
+
+defaults:
+  - /llm: llama_v32_1B_instruct
+
+  # Quantization config
+  - /quant: transform_ptq
+  - /quant/rules: [w4,a4,kv4]
+
+  # Transform config
+  - /quant/transforms: fptquant_pdr_o_d
+  - /quant/parameter_estimator: weight_lp
+
+  # Calibration and evaluation
+  - /quant/calibration_set: wikitext2_2048_128
+  - /train: kd
+  - /tokenized_dataset@train_dataset: wikitext2_2048_train
+  - /tokenized_dataset@eval_dataset: wikitext2_2048_test
+  - /evaluation: group_evaluation
+  - /evaluation@evaluation.steps.wikitext2_2048_ppl: wikitext2_2048_ppl
+  - override /quant/range_estimator: lp_norm
+
+quant:
+  max_num_batches: 4
+  batch_size: 16
+  range_estimator:
+    p: 3.0
+
+trainable_parameter_substrings:
+  - quantizer
+  - ._transform
+
+train_dataset:
+  data_processing:
+    sequence_length: 2048
+    num_workers: 0
+
+eval_dataset:
+  data_processing:
+    sequence_length: 2048
+    shuffle: false
+    return_tensors: pt
+
+train:
+  train_dataset: ${train_dataset}
+  eval_dataset: ${eval_dataset}
+  checkpoint_parameter_substrings:
+    - quantizer
+    - ._transform
+  loss_type: jsd
+  training_args:
+    learning_rate: 1e-3
+    gradient_accumulation_steps: 4
+    gradient_checkpointing: true
+    max_steps: 1024
+    warmup_ratio: 0.1
+    lr_scheduler_type: cosine
+    per_device_train_batch_size: 4
+    per_device_eval_batch_size: 1
+    max_length: 2048
+    dataset_kwargs:
+      skip_prepare_dataset: true
+    bf16: true
+    use_liger_kernel: true
+    report_to: tensorboard
+    eval_strategy: "no"
+    logging_strategy: steps
+    logging_steps: 1
+    save_strategy: steps
+    save_total_limit: 2
+    save_steps: 128
+
+# Hydra creates the run directory before application-defined resolvers are
+# available, so keep this template limited to Hydra's built-in interpolation.
+subdir: main_exp/${now:%Y-%m-%d}/${now:%H-%M-%S}_seed${seed}
+
+hydra:
+  sweep:
+    subdir: ${subdir}

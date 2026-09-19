@@ -1,0 +1,6 @@
+# RTN-opt baseline: no transforms, quantizer ranges optimised by the range estimator only.
+#
+# "Round-to-nearest, optimised" -- the reference point with no rotation or scaling applied,
+# however we may still train the scales/offsets (opt)
+defaults:
+  - no_transforms

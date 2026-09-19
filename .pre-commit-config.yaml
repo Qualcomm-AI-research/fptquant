@@ -1,0 +1,23 @@
+# Pre-commit hooks for fastresearch
+# Install with: uv run pre-commit install
+# Run manually: uv run pre-commit run --all-files
+
+repos:
+  # Ruff: lint (with auto-fix) + format
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Mypy: type checking (warn-only, does not block commits)
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy (warn-only)
+        entry: scripts/pre-commit-mypy.sh
+        language: script
+        types: [python]
+        require_serial: true
+        verbose: true

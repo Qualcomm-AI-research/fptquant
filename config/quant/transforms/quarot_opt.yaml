@@ -1,0 +1,15 @@
+# QuaRot baseline: fixed (non-learned) Hadamard rotations.
+#
+# Every transform is a fixed Hadamard, so nothing here is learned except quant scales/offsets.
+defaults:
+  - R1
+  - MM
+  - Pv
+  - Po
+  - Ph
+  - override /transform@R1.transform: hadamard
+  - override /transform@MM.transform: hadamard
+  - override /transform@Pv.transform: per_head
+  - override /transform@Pv.transform.base_transform: hadamard
+  - override /transform@Po.transform.base_transform: hadamard
+  - override /transform@Ph.transform: hadamard

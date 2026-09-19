@@ -1,0 +1,13 @@
+# FlatQuant baseline: learned Kronecker-factored invertible matrices with a diagonal scale.
+defaults:
+  - Na
+  - Nm
+  - MM
+  - Pv
+  - Ph
+  - override /transform@Na.transform: invertible_kronecker_matrix_with_diagonal
+  - override /transform@Nm.transform: invertible_kronecker_matrix_with_diagonal
+  - override /transform@MM.transform: invertible_kronecker_matrix_with_diagonal
+  - override /transform@Pv.transform: per_head
+  - override /transform@Pv.transform.base_transform: invertible_matrix
+  - override /transform@Ph.transform: invertible_matrix

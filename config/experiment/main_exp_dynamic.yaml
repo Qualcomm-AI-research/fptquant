@@ -1,0 +1,7 @@
+# @package _global_
+# Section 4.6, Table 4
+defaults:
+  - _exp_base
+
+  # Dynamic per-token activation and KV quantization with gradient-based clipping.
+  - override /quant/rules: w4a4kv4d_with_clip_and_grad

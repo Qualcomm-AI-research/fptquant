@@ -1,0 +1,23 @@
+defaults:
+  - paths: default
+  - _self_
+  - experiment: main_exp_static
+
+subdir: "${now:%Y-%m-%d}/${now:%H-%M-%S}"
+seed: 1061
+
+debug:
+  layer_slice:
+    start: null
+    stop: null
+    step: null
+    reindex_layer_idx: false
+
+hydra:
+  job:
+    chdir: true
+  run:
+    dir: ${paths.log}/fptquant/${subdir}
+  sweep:
+    dir: ${paths.log}/fptquant
+    subdir: ${subdir}

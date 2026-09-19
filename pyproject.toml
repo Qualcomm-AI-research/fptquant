@@ -1,0 +1,119 @@
+[project]
+name = "fptquant"
+version = "0.1.0"
+description = "Reference implementation of FPTQuant: transform-based quantization-aware training for LLMs"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "accelerate~=1.10.1",
+    "datasets~=4.8.0",
+    "einops",
+    "fastforward",
+    "hadamard-transform==0.1.3",
+    "hydra-core==1.3.2",
+    "hydra-zen==0.14.0",
+    "liger-kernel~=0.8.0",
+    "omegaconf>=2.3,<2.4",
+    "overrides>=7.7.0; python_version < '3.12'",
+    "pandas>=2.2",
+    "pyyaml>=6",
+    "tensorboard",
+    "tabulate",
+    "torch~=2.10.0",
+    "torchmetrics",
+    "tqdm>=4.66",
+    "transformers~=5.3.0",
+    "trl~=1.4.0",
+]
+
+[project.optional-dependencies]
+# Zero-shot / few-shot benchmark evaluations (evaluation=arc_easy, mmlu,
+# common_reasoning, ...). lm_eval is imported lazily, so the configs register
+# without it; install this extra only to actually run those evaluations.
+lm-eval = ["lm_eval==0.4.11"]
+
+[dependency-groups]
+dev = [
+    "mypy<1.17",
+    "pandas-stubs>=2.2.3.241126",
+    "pre-commit>=4.0",
+    "pytest>=9.0.2",
+    "ruff>=0.14.8",
+    "types-pyyaml>=6.0.12.20241230",
+]
+
+[tool.uv]
+package = true
+prerelease = "allow"
+
+[tool.uv.sources]
+fastforward = { git = "https://github.com/Qualcomm-AI-research/fastforward.git", rev = "4ef7bc11ce3bff64d40bd2a7ef39fb92dbc70ebf" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "packages/dev_tools",
+    "packages/fastforward_contrib",
+    "packages/fasttransforms",
+    "packages/lm_tools",
+    "packages/quant_tools",
+]
+
+[tool.ruff]
+line-length = 119
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "dev_tools",
+    "fastforward_contrib",
+    "fasttransforms",
+    "lm_tools",
+    "quant_tools",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+executionEnvironments = [{ root = ".", extraPaths = ["packages"] }]
+
+[[tool.mypy.overrides]]
+module = [
+    "accelerate.*",
+    "datasets.*",
+    "fastforward.*",
+    "fastforward_contrib.*",
+    "fasttransforms.*",
+    "liger_kernel.*",
+    "lm_eval.*",
+    "quant_tools.*",
+    "torch.*",
+    "tqdm.*",
+    "transformers.*",
+    "trl.*",
+]
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-markers",
+    "-m",
+    "not requires_network",
+]
+markers = [
+    "unit: fast, isolated tests for a single function/class/module; must be offline and deterministic",
+    "integration: tests that exercise multiple in-repository components together",
+    "requires_network: tests that may access models, datasets, or other remote resources",
+]

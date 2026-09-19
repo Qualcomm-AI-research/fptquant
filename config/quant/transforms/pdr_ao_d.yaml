@@ -1,0 +1,6 @@
+# @package quant.transforms.PDR
+
+defaults:
+  - pdr_base
+
+operation_configs: ${oc.create:${fptquant_pdr_chain:'&ao','&d',1}}

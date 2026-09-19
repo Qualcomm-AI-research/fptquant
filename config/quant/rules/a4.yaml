@@ -1,0 +1,9 @@
+linear_activations_inputs:
+  _target_: quant_tools.QueryQuantizationRule
+  query: '{&ao, &mm, &na, &nm}'
+  quantizer:
+    _target_: fastforward.nn.linear_quantizer.LinearQuantizer.factory
+    num_bits: 4
+    granularity:
+      _target_: fastforward.quantization.granularity.PerTensor
+    symmetric: false

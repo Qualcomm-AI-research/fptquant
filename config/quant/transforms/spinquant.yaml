@@ -1,0 +1,15 @@
+# SpinQuant baseline: learned rotation matrices.
+#
+# SpinQuant differs from QuaRot by making the rotations learnable (orthogonally-parametrised
+# matrices) rather than fixed Hadamards, so this uses the same placement as quarot_opt.yaml but
+# swaps every `hadamard` for the learnable `rotation` transform.
+#
+defaults:
+  - R1_train
+  - MM
+  - Pv
+  - Ph
+  - override /transform@MM.transform: hadamard
+  - override /transform@Pv.transform: per_head
+  - override /transform@Pv.transform.base_transform: rotation
+  - override /transform@Ph.transform: hadamard

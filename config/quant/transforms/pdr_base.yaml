@@ -1,0 +1,10 @@
+# @package quant.transforms.PDR
+
+defaults:
+  - /transform@transform: dynamic_scale
+
+_target_: fasttransforms.nn.collections.TransformConfig
+_convert_: all
+operation_configs: ???
+per_layer: true
+priority: 0

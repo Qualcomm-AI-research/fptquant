@@ -1,0 +1,7 @@
+defaults:
+  - R1_train
+  - MM
+  - Pu
+  - Pv
+  - PreRoPE
+  - override /transform@MM.transform: hadamard

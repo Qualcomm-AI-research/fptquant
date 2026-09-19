@@ -1,0 +1,64 @@
+# PyCharm
+.idea
+
+# VSCode
+.vscode
+.env
+*.code-workspace
+
+
+# MAC OS
+.DS_Store
+
+# pytest
+.coverage
+.pytest
+.pytest_cache
+
+# mypy
+.mypy_cache
+
+# Python
+*__pycache__*
+*.py[cod]
+*.cpython-36.pyc
+*.egg-info
+*/.python-version
+build/
+dist/
+wheels/
+
+# Patches (not to be committed by mistake)
+*.patch
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv
+.venv.*
+
+# Local (user-specific) configurations and overrides
+_local/
+
+# NOT FOR RELEASE: internal cluster paths, used only by config/submit_to/ for
+# on-cluster validation. Deleted together with config/submit_to/ before release.
+/config/paths/lasvegas.yaml
+
+# Notebooks
+.ipynb_checkpoints/
+
+# uv
+uv.lock
+!/uv.lock
+.python-version
+
+#ruff
+.ruff_cache
+
+# Network File System files
+.nfs*
+
+# Generated config files
+**/CONFIG.md
+outputs/*

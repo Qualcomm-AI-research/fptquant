@@ -1,0 +1,13 @@
+name: Repository policy
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  repolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check repository policy
+        run: docker run --rm -v "$GITHUB_WORKSPACE:/src" -w /src ghcr.io/todogroup/repolinter:v0.11.2 --rulesetUrl https://raw.githubusercontent.com/qualcomm/.github/main/repolint.json

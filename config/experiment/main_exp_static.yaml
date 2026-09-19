@@ -1,0 +1,4 @@
+# @package _global_
+# Section 4.3, Table 2
+defaults:
+  - _exp_base
