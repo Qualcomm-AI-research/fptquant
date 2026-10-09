@@ -111,6 +111,7 @@ def _load_checkpoint_weights(model: "nn.Module", checkpoint_path: Path) -> None:
     safe_weights_path = checkpoint_path / SAFE_WEIGHTS_NAME
 
     if weights_path.exists():
+        # nosemgrep: trailofbits.python.pickles-in-pytorch.pickles-in-pytorch -- weights_only=True already restricts unpickling to tensors
         state_dict = torch.load(weights_path, map_location="cpu", weights_only=True)
     elif safe_weights_path.exists():
         from safetensors.torch import load_file
@@ -202,6 +203,7 @@ def _patch_filtered_checkpoints(trainer: "Trainer", parameter_substrings: list[s
             len(state_dict),
             parameter_substrings,
         )
+        # nosemgrep: trailofbits.python.pickles-in-pytorch.pickles-in-pytorch -- torch.save only serializes, no deserialization/code-exec risk
         torch.save(filtered_state_dict, os.path.join(output_dir, WEIGHTS_NAME))
 
         # Save the same sidecar files HF would (minus the tokenizer, which is managed separately).
@@ -209,6 +211,7 @@ def _patch_filtered_checkpoints(trainer: "Trainer", parameter_substrings: list[s
             model.config.save_pretrained(output_dir)
         if getattr(model, "generation_config", None) is not None:
             model.generation_config.save_pretrained(output_dir)
+        # nosemgrep: trailofbits.python.pickles-in-pytorch.pickles-in-pytorch -- torch.save only serializes, no deserialization/code-exec risk
         torch.save(self.args, os.path.join(output_dir, TRAINING_ARGS_NAME))
 
     trainer._save = MethodType(_save, trainer)
